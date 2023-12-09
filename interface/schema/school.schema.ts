@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { Types } from 'mongoose';
 
 export type SchoolDocument = HydratedDocument<School>;
 export type NewsDocument = HydratedDocument<News>;
@@ -15,7 +16,7 @@ export class School {
   @Prop()
   region: number;
 
-  @Prop()
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'News' }] })
   news: News[];
 }
 
@@ -29,3 +30,4 @@ export class News {
 }
 
 export const SchoolSchema = SchemaFactory.createForClass(School);
+export const NewsSchema = SchemaFactory.createForClass(News);

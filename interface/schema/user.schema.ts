@@ -14,10 +14,10 @@ export class User {
   @Prop()
   permission: Permission;
 
-  @Prop()
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'School' }] })
   subscribeSchoolIds: Types.ObjectId[];
 
-  @Prop()
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'News' }] })
   newsFeed: News[];
 }
 
