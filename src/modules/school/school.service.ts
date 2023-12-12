@@ -3,10 +3,13 @@ import {
   SchoolNewsCreateDto,
   SchoolNewsDeleteDto,
   SchoolNewsUpdateDto,
+  SchoolSubscribeCreateDto,
+  SchoolSubscribeDeleteDto,
 } from '@dto/school.dto';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel, Schema } from '@nestjs/mongoose';
-import { NewsDocument, School } from '@schema/school.schema';
+import { NewsDocument, School, SchoolDocument } from '@schema/school.schema';
+import { UserDocument } from '@schema/user.schema';
 import { FilterQuery, Model } from 'mongoose';
 
 @Injectable()
@@ -80,5 +83,58 @@ export class SchoolService {
     school.news.splice(foundNewsIndex, 1);
 
     return school.save();
+  }
+
+  public async getSchoolSub(user: UserDocument): Promise<SchoolDocument[]> {
+    const school = await this.schoolModel.find({
+      _id: { $in: user.subscribeSchoolIds },
+    });
+
+    return school;
+  }
+
+  public async createSchoolSub(
+    user: UserDocument,
+    data: SchoolSubscribeCreateDto,
+  ) {
+    const { schoolId, schoolName } = data;
+
+    const option = {} as FilterQuery<School>;
+
+    if (schoolId) {
+      option.user = schoolId;
+    } else if (schoolName) {
+      option.name = schoolName;
+    }
+
+    const school = await this.schoolModel.findOne(option);
+
+    if (!school) {
+      throw new BadRequestException('School not found.');
+    }
+
+    user.subscribeSchoolIds.push(school._id);
+    user.newsFeed = [...user.newsFeed, ...school.news];
+
+    return user.save();
+  }
+
+  public async deleteSchoolSub(
+    user: UserDocument,
+    data: SchoolSubscribeDeleteDto,
+  ) {
+    const { id } = data;
+
+    const schoolIndex = user.subscribeSchoolIds.findIndex(
+      (schoolId) => schoolId === id,
+    );
+
+    if (schoolIndex === -1) {
+      throw new BadRequestException(`Failed to cancel subscribe ${id}`);
+    }
+
+    user.subscribeSchoolIds.splice(schoolIndex, 1);
+
+    return user.save();
   }
 }

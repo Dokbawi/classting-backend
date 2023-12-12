@@ -23,6 +23,9 @@ export class School {
 export class News {
   @Prop()
   context: String;
+
+  @Prop({ default: () => new Date() })
+  createdAt?: Date;
 }
 
 export const SchoolSchema = SchemaFactory.createForClass(School);
