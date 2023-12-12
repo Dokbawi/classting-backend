@@ -16,9 +16,6 @@ export class School {
 
   @Prop()
   news: News[];
-
-  @Prop()
-  adminsIds: ObjectId[];
 }
 
 @Schema()
