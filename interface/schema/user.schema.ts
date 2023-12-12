@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, ObjectId } from 'mongoose';
 import { News } from './school.schema';
+import { Permission } from 'interface/enum';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -8,6 +9,9 @@ export type UserDocument = HydratedDocument<User>;
 export class User {
   @Prop()
   name: string;
+
+  @Prop()
+  permission: Permission;
 
   @Prop()
   subscribeSchoolIds: ObjectId[];
