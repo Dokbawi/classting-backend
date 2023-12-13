@@ -10,6 +10,8 @@ import {
   SchoolNewsCreateDto,
   SchoolNewsDeleteDto,
   SchoolNewsUpdateDto,
+  SchoolSubscribeCreateDto,
+  SchoolSubscribeDeleteDto,
 } from '@interface/dto/school.dto';
 import {
   NewsDocument,
@@ -51,7 +53,7 @@ describe('Controller (e2e)', () => {
   });
 
   afterAll(async () => {
-    // await userModel.deleteOne({ _id: adminUser._id });
+    await userModel.deleteOne({ _id: adminUser._id });
     await userModel.deleteOne({ _id: studentUser._id });
     await schoolModel.deleteOne({ _id: school._id });
     await app.close();
@@ -110,6 +112,54 @@ describe('Controller (e2e)', () => {
         .set('Authorization', `Bearer ${adminUser._id}`)
         .send(createDto)
         .expect(201);
+
+      expect(response.body).toBeDefined();
+      expect(response.body._id).toEqual(createDto.id);
+    });
+  });
+
+  describe('/school/subscribe  school subscribe test', () => {
+    it('/school/subscribe (POST) - subscribe school', async () => {
+      const createDto = {
+        schoolId: school._id,
+      } as SchoolSubscribeCreateDto;
+      const response = await request(app.getHttpServer())
+        .post('/school/subscribe')
+        .set('Authorization', `Bearer ${studentUser._id}`)
+        .send(createDto)
+        .expect(201);
+      studentUser = response.body;
+      expect(response.body).toBeDefined();
+      expect(studentUser.subscribeSchoolIds.length).toEqual(1);
+    });
+
+    it('/school/subscribe (GET) - get subscribe school', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/school/subscribe')
+        .set('Authorization', `Bearer ${studentUser._id}`)
+        .expect(200);
+      expect(response.body).toBeDefined();
+      expect(response.body).toEqual(expect.any(Array));
+    });
+
+    it("/school/subscribe/news (GET) - get user's subscribe school news", async () => {
+      const response = await request(app.getHttpServer())
+        .get('/school/subscribe/news')
+        .set('Authorization', `Bearer ${studentUser._id}`)
+        .expect(200);
+      expect(response.body).toBeDefined();
+      expect(response.body).toEqual(expect.any(Array));
+    });
+
+    it('/school/subscribe (DELETE) - delete subscribe school', async () => {
+      const createDto = {
+        id: school._id,
+      } as SchoolSubscribeDeleteDto;
+      const response = await request(app.getHttpServer())
+        .delete('/school/subscribe')
+        .set('Authorization', `Bearer ${studentUser._id}`)
+        .send(createDto)
+        .expect(200);
 
       expect(response.body).toBeDefined();
       expect(response.body._id).toEqual(createDto.id);

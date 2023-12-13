@@ -69,4 +69,10 @@ export class SchoolController {
   ) {
     return this.SchoolService.deleteSchoolSub(user, body);
   }
+
+  @Get('subscribe/news')
+  @Permissions(Permission.Student)
+  public async getSubscribeSchoolNewsSub(@ReqUser() user: UserDocument) {
+    return this.SchoolService.getSubscribeSchoolNewsSub(user);
+  }
 }

@@ -59,7 +59,6 @@ export class SchoolSubscribeCreateDto {
 }
 
 export class SchoolSubscribeDeleteDto {
-  @IsMongoId()
   @Transform(({ value }: TransformFnParams) => new Types.ObjectId(value), {
     toClassOnly: true,
   })
