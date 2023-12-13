@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { News } from './school.schema';
-import { Permission } from 'interface/enum';
 import { Types } from 'mongoose';
+import { Permission } from '@interface/enum';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -18,7 +18,7 @@ export class User {
   subscribeSchoolIds: Types.ObjectId[];
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'News' }] })
-  newsFeed: News[];
+  newsFeed: Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

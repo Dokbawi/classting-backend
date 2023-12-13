@@ -24,12 +24,12 @@ export class UserService {
       .sort({ 'newsFeed.createdAt': -1 })
       .limit(size);
 
-    const nextCursor =
-      userNewsFeed.newsFeed.length > 0
-        ? userNewsFeed.newsFeed[
-            userNewsFeed.newsFeed.length - 1
-          ].createdAt.toISOString()
-        : null;
+    const nextCursor = '';
+    // userNewsFeed.newsFeed.length > 0
+    //   ? userNewsFeed.newsFeed[
+    //       userNewsFeed.newsFeed.length - 1
+    //     ].createdAt.toISOString()
+    //   : null;
 
     return {
       nextCursor,

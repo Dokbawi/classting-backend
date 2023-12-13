@@ -1,14 +1,16 @@
-import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
 import { SchoolService } from './School.service';
 import {
   SchoolCreateDto,
   SchoolNewsCreateDto,
+  SchoolNewsDeleteDto,
+  SchoolNewsUpdateDto,
   SchoolSubscribeCreateDto,
   SchoolSubscribeDeleteDto,
 } from '@dto/school.dto';
 import { Permissions, ReqUser } from '@src/decorator/auth.decorator';
 import { UserDocument } from '@schema/user.schema';
-import { Permission } from 'interface/enum';
+import { Permission } from '@interface/enum';
 import { SchoolDocument } from '@schema/school.schema';
 
 @Controller('school')
@@ -23,8 +25,23 @@ export class SchoolController {
 
   @Post('news')
   @Permissions(Permission.Admin)
-  public async createNews(@Body() body: SchoolNewsCreateDto) {
-    return this.SchoolService.createSchoolNews(body);
+  public async createNews(
+    @ReqUser() user: UserDocument,
+    @Body() body: SchoolNewsCreateDto,
+  ) {
+    return this.SchoolService.createSchoolNews(user, body);
+  }
+
+  @Delete('news')
+  @Permissions(Permission.Admin)
+  public async deleteNews(@Body() body: SchoolNewsDeleteDto) {
+    return this.SchoolService.deleteSchoolNews(body);
+  }
+
+  @Patch('news')
+  @Permissions(Permission.Admin)
+  public async updateNews(@Body() body: SchoolNewsUpdateDto) {
+    return this.SchoolService.updateSchoolNews(body);
   }
 
   @Get('subscribe')

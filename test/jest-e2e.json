@@ -1,9 +1,16 @@
 {
   "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": ".",
+  "rootDir": "../",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "testPathIgnorePatterns": ["<rootDir>/node_modules/", "<rootDir>/dist/"],
+  "moduleNameMapper": {
+    "^@src/(.*)$": "<rootDir>/src/$1",
+    "^@interface/(.*)$": "<rootDir>/interface/$1",
+    "^@schema/(.*)$": "<rootDir>/interface/schema/$1",
+    "^@dto/(.*)$": "<rootDir>/interface/dto/$1"
   }
 }
