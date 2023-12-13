@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, ObjectId } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 import { News } from './school.schema';
 import { Permission } from 'interface/enum';
+import { Types } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -14,7 +15,7 @@ export class User {
   permission: Permission;
 
   @Prop()
-  subscribeSchoolIds: ObjectId[];
+  subscribeSchoolIds: Types.ObjectId[];
 
   @Prop()
   newsFeed: News[];
