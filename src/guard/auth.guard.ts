@@ -34,7 +34,7 @@ export class AuthGuard implements CanActivate {
       return false;
     }
 
-    const user = await this.userModel.findById(uid);
+    const user = await this.userModel.findById(uid, '-newsFeed');
 
     console.log(`user : ${user}`);
 

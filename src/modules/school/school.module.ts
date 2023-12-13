@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { SchoolService } from './School.service';
 import { SchoolController } from './School.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { School, SchoolSchema } from '@schema/school.schema';
+import { News, NewsSchema, School, SchoolSchema } from '@schema/school.schema';
+import { User, UserSchema } from '@schema/user.schema';
 
 @Module({
   imports: [
@@ -10,6 +11,14 @@ import { School, SchoolSchema } from '@schema/school.schema';
       {
         name: School.name,
         schema: SchoolSchema,
+      },
+      {
+        name: User.name,
+        schema: UserSchema,
+      },
+      {
+        name: News.name,
+        schema: NewsSchema,
       },
     ]),
   ],

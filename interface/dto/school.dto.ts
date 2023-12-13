@@ -69,3 +69,5 @@ export class SchoolSubscribeDeleteDto {
   })
   id: Types.ObjectId;
 }
+
+export class SchoolNewsResponseDto {}

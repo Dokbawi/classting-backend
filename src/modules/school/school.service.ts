@@ -8,13 +8,22 @@ import {
 } from '@dto/school.dto';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel, Schema } from '@nestjs/mongoose';
-import { NewsDocument, School, SchoolDocument } from '@schema/school.schema';
-import { UserDocument } from '@schema/user.schema';
+import {
+  News,
+  NewsDocument,
+  School,
+  SchoolDocument,
+} from '@schema/school.schema';
+import { User, UserDocument } from '@schema/user.schema';
 import { FilterQuery, Model } from 'mongoose';
 
 @Injectable()
 export class SchoolService {
-  constructor(@InjectModel(School.name) private schoolModel: Model<School>) {}
+  constructor(
+    @InjectModel(School.name) private schoolModel: Model<School>,
+    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(News.name) private newsModel: Model<News>,
+  ) {}
 
   public async createSchool(data: SchoolCreateDto) {
     const { region, name } = data;
@@ -28,7 +37,6 @@ export class SchoolService {
     }
 
     const createSchool = new this.schoolModel({ name, region });
-
     return createSchool.save();
   }
 
