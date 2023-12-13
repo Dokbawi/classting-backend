@@ -7,6 +7,7 @@ import { SchoolModule } from './modules/school/school.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guard/auth.guard';
 import { User, UserSchema } from '@schema/user.schema';
+import { UserModule } from './modules/user/user.module';
 @Module({
   imports: [
     MongooseModule.forRootAsync({
@@ -21,6 +22,7 @@ import { User, UserSchema } from '@schema/user.schema';
       },
     ]),
     SchoolModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [

@@ -15,7 +15,7 @@ import {
   SchoolDocument,
 } from '@schema/school.schema';
 import { User, UserDocument } from '@schema/user.schema';
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 
 @Injectable()
 export class SchoolService {
@@ -40,13 +40,13 @@ export class SchoolService {
     return createSchool.save();
   }
 
-  public async createSchoolNews(data: SchoolNewsCreateDto) {
+  public async createSchoolNews(user: UserDocument, data: SchoolNewsCreateDto) {
     const { context, schoolId, schoolName } = data;
 
     const option = {} as FilterQuery<School>;
 
     if (schoolId) {
-      option.user = schoolId;
+      option._id = schoolId;
     } else if (schoolName) {
       option.name = schoolName;
     }
@@ -56,41 +56,38 @@ export class SchoolService {
     if (!school) {
       throw new BadRequestException('School not found.');
     }
+    const createNews = new this.newsModel({ context });
 
-    school.news.push({ context });
-    return school.save();
+    school.news.push(createNews._id);
+    school.save();
+
+    const userInfo = await this.userModel.findById(user._id);
+
+    userInfo.newsFeed.push(createNews._id);
+    userInfo.save();
+    return createNews.save();
   }
 
   public async updateSchoolNews(data: SchoolNewsUpdateDto) {
     const { context, id } = data;
 
-    const school = await this.schoolModel.findOne({ 'news._id': id });
-    const foundNews = school.news.find((news: NewsDocument) => news._id === id);
+    const news = await this.newsModel.findById(id);
+    news.context = context;
 
-    if (!foundNews) {
-      throw new BadRequestException('News not found.');
-    }
-
-    foundNews.context = context;
-
-    return school.save();
+    return news.save();
   }
 
   public async deleteSchoolNews(data: SchoolNewsDeleteDto) {
     const { id } = data;
 
-    const school = await this.schoolModel.findOne({ 'news._id': id });
-    const foundNewsIndex = school.news.findIndex(
-      (news: NewsDocument) => news._id === id,
-    );
+    await this.userModel.updateMany({
+      $pullAll: { newsFeed: [new Types.ObjectId(id)] },
+    });
+    await this.schoolModel.updateMany({
+      $pullAll: { news: [new Types.ObjectId(id)] },
+    });
 
-    if (foundNewsIndex === -1) {
-      throw new BadRequestException('News not found.');
-    }
-
-    school.news.splice(foundNewsIndex, 1);
-
-    return school.save();
+    return await this.newsModel.findByIdAndDelete(id);
   }
 
   public async getSchoolSub(user: UserDocument): Promise<SchoolDocument[]> {
@@ -110,7 +107,7 @@ export class SchoolService {
     const option = {} as FilterQuery<School>;
 
     if (schoolId) {
-      option.user = schoolId;
+      option._id = schoolId;
     } else if (schoolName) {
       option.name = schoolName;
     }
@@ -122,7 +119,6 @@ export class SchoolService {
     }
 
     user.subscribeSchoolIds.push(school._id);
-    user.newsFeed = [...user.newsFeed, ...school.news];
 
     return user.save();
   }
@@ -134,7 +130,7 @@ export class SchoolService {
     const { id } = data;
 
     const schoolIndex = user.subscribeSchoolIds.findIndex(
-      (schoolId) => schoolId === id,
+      (schoolId) => schoolId.toString() === id.toString(),
     );
 
     if (schoolIndex === -1) {
@@ -144,5 +140,18 @@ export class SchoolService {
     user.subscribeSchoolIds.splice(schoolIndex, 1);
 
     return user.save();
+  }
+
+  public async getSubscribeSchoolNewsSub(user: UserDocument) {
+    const schoolIds = user.subscribeSchoolIds;
+    const schools = await this.schoolModel.find({ _id: { $in: schoolIds } });
+
+    for await (const school of schools) {
+      school.news = (await this.newsModel
+        .find({ _id: { $in: school.news } })
+        .sort({ createdAt: -1 })) as any;
+    }
+
+    return schools;
   }
 }

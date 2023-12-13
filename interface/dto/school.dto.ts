@@ -11,12 +11,11 @@ export class SchoolCreateDto {
 }
 
 export class SchoolNewsCreateDto {
-  @IsMongoId()
+  @IsString()
   @IsOptional()
   @ValidateIf((object, val) => object.schoolId === undefined)
   schoolName?: Types.ObjectId;
 
-  @IsMongoId()
   @IsOptional()
   @ValidateIf((object, val) => object.schoolName === undefined)
   @Transform(({ value }: TransformFnParams) => new Types.ObjectId(value), {
@@ -29,7 +28,6 @@ export class SchoolNewsCreateDto {
 }
 
 export class SchoolNewsUpdateDto {
-  @IsMongoId()
   @Transform(({ value }: TransformFnParams) => new Types.ObjectId(value), {
     toClassOnly: true,
   })
@@ -40,7 +38,6 @@ export class SchoolNewsUpdateDto {
 }
 
 export class SchoolNewsDeleteDto {
-  @IsMongoId()
   @Transform(({ value }: TransformFnParams) => new Types.ObjectId(value), {
     toClassOnly: true,
   })
@@ -48,12 +45,11 @@ export class SchoolNewsDeleteDto {
 }
 
 export class SchoolSubscribeCreateDto {
-  @IsMongoId()
+  @IsString()
   @IsOptional()
   @ValidateIf((object, val) => object.schoolId === undefined)
   schoolName?: Types.ObjectId;
 
-  @IsMongoId()
   @IsOptional()
   @ValidateIf((object, val) => object.schoolName === undefined)
   @Transform(({ value }: TransformFnParams) => new Types.ObjectId(value), {
@@ -63,7 +59,6 @@ export class SchoolSubscribeCreateDto {
 }
 
 export class SchoolSubscribeDeleteDto {
-  @IsMongoId()
   @Transform(({ value }: TransformFnParams) => new Types.ObjectId(value), {
     toClassOnly: true,
   })

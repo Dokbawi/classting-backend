@@ -14,10 +14,10 @@ export class School {
   name: string;
 
   @Prop()
-  region: number;
+  region: string;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'News' }] })
-  news: News[];
+  @Prop({ type: [{ type: Types.ObjectId }], ref: 'News' })
+  news: Types.ObjectId[];
 }
 
 @Schema()
