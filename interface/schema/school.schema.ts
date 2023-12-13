@@ -16,7 +16,7 @@ export class School {
   @Prop()
   region: string;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'News' }] })
+  @Prop({ type: [{ type: Types.ObjectId }], ref: 'News' })
   news: Types.ObjectId[];
 }
 

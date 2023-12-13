@@ -165,4 +165,13 @@ describe('Controller (e2e)', () => {
       expect(response.body._id).toEqual(createDto.id);
     });
   });
+
+  it('/user/news-feed (GET) - get user news-feed', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/user/news-feed')
+      .set('Authorization', `Bearer ${studentUser._id}`)
+      .expect(200);
+    expect(response.body).toBeDefined();
+    expect(response.body).toEqual(expect.any(Array));
+  });
 });

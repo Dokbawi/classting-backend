@@ -15,7 +15,8 @@ export class User {
   permission: Permission;
 
   @Prop({
-    type: [{ type: Types.ObjectId, ref: 'School' }],
+    type: [{ type: Types.ObjectId }],
+    ref: 'School',
     validate: {
       validator: async function (value: Types.ObjectId[]) {
         return value.length === new Set(value.map(String)).size;
@@ -25,7 +26,7 @@ export class User {
   })
   subscribeSchoolIds: Types.ObjectId[];
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'News' }] })
+  @Prop({ type: [{ type: Types.ObjectId }], ref: 'News' })
   newsFeed: Types.ObjectId[];
 }
 
